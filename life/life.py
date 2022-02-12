@@ -85,3 +85,34 @@ class Game:
         pyplot.clf()
         pyplot.matshow(self.board, fignum=0, cmap='binary')
         pyplot.show()
+
+    def insert(self, pattern, s):
+        """Insert a pattern centred at a given square."""
+        self.board[s[0] - 1: s[0] + 2, s[1] - 1: s[1] + 2] = pattern.grid
+
+
+class Pattern:
+    """A Pattern that can be flipped and rotated."""
+
+    def __init__(self, array):
+        """Construct a Pattern from a numpy array of zeros and ones."""
+        self.grid = array
+
+    def flip_vertical(self):
+        """Flip the pattern vertically."""
+        return Pattern(self.grid[:: -1])
+
+    def flip_horizontal(self):
+        """Flip the pattern horizontally."""
+        return Pattern(np.array([row[:: -1] for row in self.grid]))
+
+    def flip_diag(self):
+        """Flip the pattern diagonally."""
+        return Pattern(self.grid.T)
+
+    def rotate(self, n):
+        """Rotate the pattern n x 90 degrees anticlockwise."""
+        pattern = Pattern(self.grid)
+        for _ in range(n % 4):
+            pattern = pattern.flip_diag().flip_vertical()
+        return pattern
